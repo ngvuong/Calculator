@@ -1,0 +1,150 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+}
+.calculator {
+  display: flex;
+  flex-direction: column;
+  /* row-gap: 11px; */
+  /* justify-content: space-between; */
+  align-items: center;
+  margin-top: 20px;
+  width: 400px;
+  height: 550px;
+  background-color: #336c6c;
+  border: 5px solid black;
+  border-radius: 5%;
+}
+.display-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: inherit;
+  height: 20%;
+  background-color: #ebecf2;
+  margin-top: 20px;
+  border: 1px solid black;
+  /* border-radius: 1%; */
+}
+#display {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 90%;
+  height: 60%;
+  border: 2px solid black;
+  font-size: 3em;
+  font-weight: bolder;
+  border-radius: 5%;
+  background-color: #7c8c8763;
+}
+
+.pad-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 75%;
+  width: inherit;
+  margin-top: auto;
+}
+.pad {
+  display: grid;
+  grid-template-rows: repeat(5, 75px);
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-areas:
+    "percent negative back clear"
+    "n1 n2 n3 plus"
+    "n4 n5 n6 minus"
+    "n7 n8 n9 multiply"
+    "decimal n0 equal divide";
+  gap: 4px;
+}
+
+.pad button {
+  font-size: 2em;
+  border-radius: 25%;
+  cursor: pointer;
+  border: 1px solid black;
+}
+
+.operators {
+  background-color: rgb(250, 171, 65);
+}
+
+.row1 {
+  background-color: rgb(145, 248, 240);
+}
+
+.numbers {
+  color: rgb(211, 209, 209);
+  background-color: rgb(59, 55, 55);
+}
+#percent {
+  grid-area: percent;
+}
+
+#negative {
+  grid-area: negative;
+}
+
+#back {
+  grid-area: back;
+}
+
+#clear {
+  grid-area: clear;
+}
+#n0 {
+  grid-area: n0;
+}
+
+#n1 {
+  grid-area: n1;
+}
+#n2 {
+  grid-area: n2;
+}
+#n3 {
+  grid-area: n3;
+}
+#n4 {
+  grid-area: n4;
+}
+#n5 {
+  grid-area: n5;
+}
+#n6 {
+  grid-area: n6;
+}
+#n7 {
+  grid-area: n7;
+}
+#n8 {
+  grid-area: n8;
+}
+#n9 {
+  grid-area: n9;
+}
+#decimal {
+  grid-area: decimal;
+  background-color: ;
+}
+#plus {
+  grid-area: plus;
+}
+#minus {
+  grid-area: minus;
+}
+#multiply {
+  grid-area: multiply;
+}
+#divide {
+  grid-area: divide;
+}
+#equal {
+  grid-area: equal;
+}
