@@ -1,23 +1,30 @@
 //store concurrent data in a global object
 const data = {
-  num1: 0,
-  operation: null,
-  num2: null,
-  result: null,
   currentDisplay: 0,
 };
 
 //display the number
+const display = document.querySelector(".display");
 function displayNumber(num) {
-  const display = document.querySelector("#display");
   currDis = data.currentDisplay;
   //avoid printing repeated leading zero
   if (currDis == 0 && num == 0) num = "";
-  const len = currDis.toString().replace("-", "").length;
+
+  if (num < 1 && num.toString().length > 9) {
+    num = num.toFixed(7);
+  }
+  const lenNum = num.toString().length;
+  console.log(num, lenNum);
+  const lenDis = currDis.toString().replace("-", "").length;
   currDis += num;
-  if (len < 10) {
-    //take out leading zero if not followed by decimal
-    display.textContent = +currDis || currDis;
+  if (lenDis < 10) {
+    if (lenNum > 9) {
+      currDis = (+currDis).toExponential(1);
+      display.textContent = currDis;
+    } else {
+      //take out leading zero if not followed by decimal
+      display.textContent = +currDis || currDis;
+    }
     data.currentDisplay = currDis;
   }
 }
@@ -38,9 +45,10 @@ Buttons.forEach((btn) =>
     }
   })
 );
+
 function handleNumbers(btn) {
   let val = btn.value;
-  let currDis = data.currentDisplay;
+  let currDis = data.currentDisplay.toString();
   if (val != "." || currDis.indexOf(val) == -1) {
     displayNumber(val);
   }
@@ -48,42 +56,42 @@ function handleNumbers(btn) {
 
 function handleOperators(btn) {
   const op = btn.value;
-  //case: {n1}: = -> nothing; others -> store n1 and op
+  let currDis = data.currentDisplay;
   const opExist = !!data.operation;
   if (opExist) {
-    data.num2 = data.currentDisplay;
-  } else data.num1 = data.currentDisplay;
-  data.operation = op == "equal" ? data.operation : op;
+    if (op == "equal") {
+      data.num2 = currDis || data.num2 || data.num1;
+    } else {
+      data.num2 = null;
+      data.num2 = currDis || data.num2;
+    }
+  } else data.num1 = currDis;
   clearDisplay();
-  if (op == "equal" && data.operation) {
-    data.num2 = data.result ? data.num2 : data.num2 || data.num1;
-  }
-  if (data.num1 && data.num2) {
+  if (data.num1 && data.num2 && data.operation) {
     operate(data.operation, data.num1, data.num2);
   }
+  data.operation = op == "equal" ? data.operation : op;
 }
-
-function clearDisplay() {
-  data.currentDisplay = 0;
-}
-// if (op != "=" && !data.num2) {
-//   data.operation = op;
-// } else if()
-// if (data.num2 && !data.result) {
-//   operate(data.operation, data.num1, data.num2);
-
-// } else {
-//   data.num1 = display.textContent || 0;
-// }
-//case: {n1, op}: = -> n1 op n1, store and display result,
-//n1 = result; others -> store op
-
-//case: {n1, op, n2}: all operators -> evaluate expression,
-//store and display result, n1 = result; if = repeat eval
-//if other op -> store new op
 
 function handleMisc(btn) {
-  console.log("hithere");
+  const val = btn.value;
+  let currDis = data.currentDisplay;
+  if (val == "percent") {
+    if (+display.textContent) {
+      currDis = +(display.textContent / 100).toFixed(9);
+    }
+  } else if (val == "negative") {
+    currDis = -currDis;
+    if (currDis == -0) currDis = "-" + currDis;
+  } else if (val == "back") {
+    currDis = currDis.slice(0, -1) || 0;
+  } else {
+    reset();
+    return;
+  }
+  console.log(currDis);
+  data.currentDisplay = currDis;
+  displayNumber("");
 }
 
 //keyboard input handling
@@ -98,13 +106,18 @@ function handleKbInput(e) {
 
 function operate(operation, num1, num2) {
   const fn = window[operation];
-  console.log(operation, fn);
   data.result = fn(+num1, +num2);
-  console.log(num1, num2, data.result);
   clearDisplay();
+  display.classList.add("flicker");
   displayNumber(data.result);
+  setTimeout(removeFlicker, 50);
   clearDisplay();
-  data.num1 = data.result;
+  data.num1 = data.result == 0 ? "0" : data.result;
+}
+
+//flicker display only on showing result
+function removeFlicker() {
+  display.classList.remove("flicker");
 }
 
 function add(num1, num2) {
@@ -129,4 +142,19 @@ function divide(num1, num2) {
 
 function percent(num) {
   return num / 100;
+}
+
+//for Clear button
+function reset() {
+  data.num1 = 0;
+  data.operation = null;
+  data.num2 = null;
+  data.result = null;
+  data.currentDisplay = 0;
+  displayNumber("");
+}
+
+// prepare display for new number display
+function clearDisplay() {
+  data.currentDisplay = 0;
 }
