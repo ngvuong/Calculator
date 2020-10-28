@@ -9,16 +9,16 @@ function displayNumber(num) {
   currDis = data.currentDisplay;
   //avoid printing repeated leading zero
   if (currDis == 0 && num == 0) num = "";
-  const numStr = num.toString();
-  if (numStr.includes(".") && numStr.length > 9) {
-    num = num.toFixed(8);
+  if (num.toString().includes(".")) {
+    num = roundDecimal(num);
+    console.log("this here", num);
   }
   // const lenNum = num.toString().length;
   // console.log(num, lenNum);
   const lenDis = currDis.toString().replace("-", "").length;
   currDis += num;
   console.log(currDis);
-  if (lenDis < 10) {
+  if (lenDis < 9) {
     if (num > 999999999) {
       console.log("this");
       currDis = (+currDis).toExponential(1);
@@ -30,6 +30,18 @@ function displayNumber(num) {
     }
     data.currentDisplay = display.textContent;
   }
+}
+
+function roundDecimal(num) {
+  const numStr = num.toString();
+  const decIndex = numStr.indexOf(".");
+  const wholeNumLen = numStr.slice(0, decIndex).length;
+  console.log(wholeNumLen);
+  // const decimalLen = numStr.slice(decIndex + 1);
+  if (num > 999999999) return num.toExponential(1);
+  if (numStr.length > 9) {
+    return num.toFixed(9 - wholeNumLen);
+  } else return num;
 }
 
 //handle button clicks
