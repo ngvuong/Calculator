@@ -9,23 +9,26 @@ function displayNumber(num) {
   currDis = data.currentDisplay;
   //avoid printing repeated leading zero
   if (currDis == 0 && num == 0) num = "";
-
-  if (num < 1 && num.toString().length > 9) {
-    num = num.toFixed(7);
+  const numStr = num.toString();
+  if (numStr.includes(".") && numStr.length > 9) {
+    num = num.toFixed(8);
   }
-  const lenNum = num.toString().length;
-  console.log(num, lenNum);
+  // const lenNum = num.toString().length;
+  // console.log(num, lenNum);
   const lenDis = currDis.toString().replace("-", "").length;
   currDis += num;
+  console.log(currDis);
   if (lenDis < 10) {
-    if (lenNum > 9) {
+    if (num > 999999999) {
+      console.log("this");
       currDis = (+currDis).toExponential(1);
       display.textContent = currDis;
     } else {
       //take out leading zero if not followed by decimal
-      display.textContent = +currDis || currDis;
+      console.log("this", +currDis);
+      display.textContent = num == "." ? currDis : +currDis;
     }
-    data.currentDisplay = currDis;
+    data.currentDisplay = display.textContent;
   }
 }
 
@@ -84,7 +87,11 @@ function handleMisc(btn) {
     currDis = -currDis;
     if (currDis == -0) currDis = "-" + currDis;
   } else if (val == "back") {
-    currDis = currDis.slice(0, -1) || 0;
+    try {
+      currDis = currDis.slice(0, -1) || 0;
+    } catch (error) {
+      return;
+    }
   } else {
     reset();
     return;
@@ -99,7 +106,7 @@ document.addEventListener("keydown", handleKbInput);
 function handleKbInput(e) {
   keyName = e.key;
   if (keyName == "Enter") keyName = "=";
-  //select and trigger click appropriate button if key name matches
+  //select and trigger click on appropriate button if key name matches
   const key = document.querySelector(`button[name='${keyName}']`);
   if (key) key.click();
 }
